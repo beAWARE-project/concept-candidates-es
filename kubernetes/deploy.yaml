@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: concept-candidates-es
+  name: concept-candidates-es
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: concept-candidates-es
+    spec:
+      containers:
+      - env:
+        - name: LANGUAGE
+          value: es
+        image: maven-taln.upf.edu/uima_taln_concept:20190130b
+        name: concept-candidates-es
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "1"
+            memory: "4Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        volumeMounts:
+        - mountPath: /app/indices
+          name: concept-candidates-claim0
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - name: concept-candidates-claim0
+        persistentVolumeClaim:
+          claimName: concept-candidates-claim0
+          readOnly: true
+status: {}
